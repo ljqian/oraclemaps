@@ -4,8 +4,8 @@
 <meta charset="utf-8" />
 <title>Display a map</title>
 <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
-<script src="https://api.mapbox.com/mapbox-gl-js/v1.8.1/mapbox-gl.js"></script>
-<link href="https://api.mapbox.com/mapbox-gl-js/v1.8.1/mapbox-gl.css" rel="stylesheet" />
+<script src="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js"></script>
+<link href="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css" rel="stylesheet" />
 <style>
   body { margin: 0; padding: 0; }
   #map { position: absolute; top: 0; bottom: 0; width: 100%; }
@@ -14,15 +14,13 @@
 <body>
 <div id="map"></div>
 <script>
-    //if you have an account with Mapbox, enter the access token here.
-    //mapboxgl.accessToken = '<your access token here>';
   
-    var mapInstance = new mapboxgl.Map({
+    var mapInstance = new maplibregl.Map({
             container: 'map',
 
             // This defines where to load the background map tiles.
-            // If you have an account with Mapbox you can set the style to 
-            // your hosted maps from Mapbox server.
+            // If you have an account with a map tile provider you can set the style to 
+            // their map tile style JSON url.
             style: 'map-styles/world_map/oracle_world_map.json',
 
             center: [-122, 37],
@@ -35,10 +33,11 @@
         var mvDataSrc = "mvdemo";  //mapviewer data source
         var mvTheme = "CUSTOMERS"; //mapviewer pre-defined theme containing POINT type geometries.
 
-        //URL to MapViewer generated vector tiles for the specified theme.
+        //URL to MapViewer's dynamically generated vector tiles for the specified theme. Note that each vector tile
+        //can only include one theme.
         var vectorTileUrl = mvURL+"/vt/"+mvDataSrc+"/{z}/{x}/{y}.mvt?t="+mvTheme ;
 
-        //defines a Mapbox source based on the vector tiles for the theme CUSTOMERS.
+        //defines a MapLibre source based on the vector tiles for the theme CUSTOMERS.
         var source = {
             "type" : "vector",  
             "tiles" : [vectorTileUrl], // a vector tile source
@@ -48,11 +47,11 @@
 
         mapInstance.addSource("my-customers-source", source);
 
-        //Defines a Mapbox layer that is contained inside the above source. It is
+        //Defines a MapLibre layer that is contained inside the above source. It is
         //also the only layer in the source. 
         var layer = {
             "id" : "my-customers-layer",
-            "type" : "circle",  //Mapbox rendering type: circle
+            "type" : "circle",  //MapLibre rendering type: circle
             "source": 'my-customers-source',
             
             //Each mapviewer generated vector tile source always contains only one
@@ -92,7 +91,7 @@
                 coords[0] += e.lngLat.lng > coords[0] ? 360 : -360;
             }
              
-            new mapboxgl.Popup()
+            new maplibregl.Popup()
                 .setLngLat(coords)
                 .setHTML(popupContentsHtml)
                 .addTo(mapInstance);
